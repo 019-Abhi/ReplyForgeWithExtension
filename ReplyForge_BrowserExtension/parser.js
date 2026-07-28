@@ -63,3 +63,5 @@ function parseTweet(article) {
     };
 
 }
+
+window.parseTweet = parseTweet;
