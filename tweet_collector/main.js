@@ -1,7 +1,10 @@
 const { chromium } = require("playwright");
-
+const { generateReply } = require("../agent/ollama");
 const collectedTweets = [];
 const seenTweetIds = new Set();
+
+const MAX_AI_REPLIES = 5;
+let aiRepliesGenerated = 0;
 
 function parseTweet(article) {
 
@@ -147,9 +150,22 @@ async function collectVisibleTweets(page) {
 
         newTweets++;
 
-        console.log(
-            `[${collectedTweets.length}] @${tweet.author.username}`
-        );
+        if (aiRepliesGenerated < MAX_AI_REPLIES) {
+            aiRepliesGenerated++;
+            console.log(
+                `\n[${collectedTweets.length}] @${tweet.author.username}`
+            );
+
+            console.log("\nTweet:");
+            console.log(tweet.tweet.text);
+
+            console.log("\nGenerating reply...\n");
+            const reply = await generateReply(tweet);
+            console.log("Reply:");
+            console.log(reply);
+        }
+
+        console.log("\n----------------------------------------");
 
     }
 
