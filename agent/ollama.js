@@ -1,5 +1,6 @@
 const { default: ollama } = require("ollama");
-const systemPrompt = require("./prompt");
+// const systemPrompt = require("./prompt");
+const { buildSystemPrompt } = require("./promptBuilder");
 
 async function generateReply(tweet) {
 
@@ -12,7 +13,7 @@ async function generateReply(tweet) {
 
             {
                 role: "system",
-                content: systemPrompt
+                content: buildSystemPrompt()
             },
 
             {
@@ -26,12 +27,14 @@ async function generateReply(tweet) {
                     @${tweet.author.username}`
             }
 
-        ]
+        ],
+
+        options: {
+            temperature: 1,
+        }
 
     });
-
     return response.message.content.trim();
-
 }
 
 module.exports = {
