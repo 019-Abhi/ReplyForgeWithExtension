@@ -1,12 +1,12 @@
 const { default: ollama } = require("ollama");
-// const systemPrompt = require("./prompt");
-const { buildSystemPrompt } = require("./promptBuilder");
+const { buildPrompt, buildSystemPrompt } = require("./promptBuilder");
 
 async function generateReply(tweet) {
 
     const response = await ollama.chat({
 
         model: "qwen3:8b",
+
         think: "low",
 
         messages: [
@@ -18,23 +18,19 @@ async function generateReply(tweet) {
 
             {
                 role: "user",
-                content:
-                    `Tweet:
-
-                    ${tweet.tweet.text}
-
-                    Author:
-                    @${tweet.author.username}`
+                content: buildPrompt(tweet)
             }
 
         ],
 
         options: {
-            temperature: 1,
+            temperature: 1
         }
 
     });
+
     return response.message.content.trim();
+
 }
 
 module.exports = {
